@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Provider {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  website   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  models    Model[]
+}
+
+model Model {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  description   String?
+  category      String
+  contextWindow Int?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  providerId    String
+  provider      Provider @relation(fields: [providerId], references: [id])
+  
+  pricing       ModelPricing?
+  benchmarks    ModelBenchmark[]
+
+  @@index([providerId])
+  @@index([category])
+}
+
+
+model ModelPricing {
+  id                    String   @id @default(cuid())
+  modelId               String   @unique
+  inputPricePerMillion  Decimal  @db.Decimal(10, 6)
+  outputPricePerMillion Decimal  @db.Decimal(10, 6)
+  currency              String   @default("USD")
+  updatedAt             DateTime @updatedAt
+
+  model Model @relation(fields: [modelId], references: [id], onDelete: Cascade)
+}
+
+
+model Benchmark {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  modelScores ModelBenchmark[]
+}
+
+
+model ModelBenchmark {
+  id          String   @id @default(cuid())
+  modelId     String
+  benchmarkId String
+  score       Decimal  @db.Decimal(8, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  model     Model     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  benchmark Benchmark @relation(fields: [benchmarkId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, benchmarkId])
+  @@index([benchmarkId])
+}
