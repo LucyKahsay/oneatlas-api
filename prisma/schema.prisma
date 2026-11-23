@@ -25,6 +25,11 @@ model Model {
   description   String?
   category      String
   contextWindow Int?
+
+  releaseDate   DateTime?
+  modalities    String[] @default([])
+  capabilities  String[] @default([])
+
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

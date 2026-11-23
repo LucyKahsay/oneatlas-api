@@ -77,6 +77,45 @@ async function main() {
       },
     ],
   });
+
+
+  
+  // Update existing models with illustrative capabilities and modalities
+  await Promise.all([
+    prisma.model.update({
+      where: { slug: 'gpt-4-1' },
+      data: {
+        modalities: ['text', 'image'],
+        capabilities: ['reasoning', 'coding', 'analysis'],
+      },
+    }),
+
+    prisma.model.update({
+      where: { slug: 'gpt-4-1-mini' },
+      data: {
+        modalities: ['text', 'image'],
+        capabilities: ['reasoning', 'coding', 'analysis'],
+      },
+    }),
+
+    prisma.model.update({
+      where: { slug: 'claude-sonnet' },
+      data: {
+        modalities: ['text', 'image'],
+        capabilities: ['reasoning', 'coding', 'analysis'],
+      },
+    }),
+
+    prisma.model.update({
+      where: { slug: 'gemini' },
+      data: {
+        modalities: ['text', 'image', 'audio', 'video'],
+        capabilities: ['reasoning', 'coding', 'analysis', 'multimodal'],
+      },
+    }),
+  ]);
+
+
   
   await prisma.modelPricing.createMany({
   data: [
