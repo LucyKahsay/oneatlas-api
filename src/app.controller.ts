@@ -1,12 +1,21 @@
+
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getApiInfo() {
+    return {
+      name: 'OneAtlas API',
+      description: 'Backend API for discovering and evaluating AI models.',
+      status: 'running',
+      endpoints: {
+        models: '/models',
+        modelDetails: '/models/:slug',
+        providers: '/providers',
+        benchmarks: '/benchmarks',
+        rankings: '/rankings?benchmark=humaneval',
+      },
+    };
   }
 }
